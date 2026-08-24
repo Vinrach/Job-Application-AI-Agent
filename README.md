@@ -2,19 +2,16 @@
 
 ### AI-Powered Job Discovery, CV Analysis, Job Matching & Application Prioritization with n8n
 
-```{=html}
 <p align="center">
-```
-`<img src="https://img.shields.io/badge/n8n-Workflow%20Automation-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">`{=html}
-`<img src="https://img.shields.io/badge/Generative%20AI-LLM%20Matching-412991?style=for-the-badge&logo=openai&logoColor=white" alt="Generative AI">`{=html}
-`<img src="https://img.shields.io/badge/OpenRouter-LLM-6E56CF?style=for-the-badge" alt="OpenRouter">`{=html}
-`<img src="https://img.shields.io/badge/JavaScript-Automation-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">`{=html}
-`<img src="https://img.shields.io/badge/Excel-XLSX-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white" alt="Excel">`{=html}
-`<img src="https://img.shields.io/badge/Arbeitnow-Job%20API-111827?style=for-the-badge" alt="Arbeitnow">`{=html}
 
-```{=html}
+<img src="https://img.shields.io/badge/n8n-Workflow%20Automation-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">
+<img src="https://img.shields.io/badge/Generative%20AI-LLM%20Matching-412991?style=for-the-badge&logo=openai&logoColor=white" alt="Generative AI">
+<img src="https://img.shields.io/badge/OpenRouter-LLM-6E56CF?style=for-the-badge" alt="OpenRouter">
+<img src="https://img.shields.io/badge/JavaScript-Automation-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+<img src="https://img.shields.io/badge/Excel-XLSX-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white" alt="Excel">
+<img src="https://img.shields.io/badge/Arbeitnow-Job%20API-111827?style=for-the-badge" alt="Arbeitnow">
+
 </p>
-```
 
 ------------------------------------------------------------------------
 
