@@ -1,4 +1,4 @@
-# 🤖 AI Job Search Agent
+# 🤖 AI-Powered Job Search & Matching Automation Agent 
 
 ### AI-Powered Job Discovery, CV Analysis & Job Matching with n8n
 
