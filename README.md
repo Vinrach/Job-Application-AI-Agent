@@ -44,6 +44,8 @@ The system automates:
 
 # 🔄 Workflow Architecture
 
+<img width="1122" height="727" alt="image" src="https://github.com/user-attachments/assets/d5b76ebc-ba0b-4150-a9dd-330e059c6612" />
+
 ```text
 Master CV
    │
