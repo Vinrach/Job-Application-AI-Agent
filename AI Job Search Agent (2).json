@@ -1,0 +1,770 @@
+{
+  "name": "AI Job Search Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -288
+      ],
+      "id": "e8fcbd6f-fb7c-4ab7-9dff-25999a5cb82e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "command": "pandoc \"C:/n8n-files/Master CV/German_CV_MasterQA.docx\" -t plain -o \"C:/n8n-files/Master CV/German_CV_MasterQA.txt\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -288
+      ],
+      "id": "1a737321-6ac8-42cc-85ba-31105d42914e",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "fileSelector": "C:/n8n-files/Master CV/German_CV_MasterQA.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        -288
+      ],
+      "id": "ac13918b-f9e1-48ca-aaf4-41cb044619f5",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        928,
+        -288
+      ],
+      "id": "a374b12b-9905-4fe1-8443-b35d8de90603",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        -48
+      ],
+      "id": "15ff0287-7c83-4680-8038-498b81e3d464",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "X8lu80mVwOyPmaPB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"target_roles\": [\n    \"QA Engineer\",\n    \"Test Automation Engineer\"\n  ],\n  \"technical_skills\": [\n    \"Python\",\n    \"Java\",\n    \"Git\"\n  ],\n  \"qa_skills\": [\n    \"Manual Testing\",\n    \"Test Automation\",\n    \"API Testing\"\n  ],\n  \"programming_languages\": [\n    \"Python\",\n    \"Java\",\n    \"SQL\"\n  ],\n  \"testing_tools\": [\n    \"Selenium\",\n    \"Cucumber\",\n    \"Postman\",\n    \"Jira\",\n    \"Jenkins\"\n  ],\n  \"api_testing_tools\": [\n    \"Postman\"\n  ],\n  \"devops_tools\": [\n    \"Git\",\n    \"Jenkins\",\n    \"Docker\",\n    \"Kubernetes\"\n  ],\n  \"databases\": [\n    \"PostgreSQL\"\n  ],\n  \"cloud_technologies\": [\n    \"Google Cloud Platform\"\n  ],\n  \"years_of_experience\": 3,\n  \"seniority\": \"Mid-level\",\n  \"industries\": [\n    \"SaaS\",\n    \"Enterprise Software\"\n  ],\n  \"certifications\": [\n    \"Google Cloud Certified Associate Cloud Engineer\"\n  ],\n  \"education\": [\n    \"Master of Science in AI and Data Analytics\"\n  ],\n  \"languages\": [\n    \"English (C1)\",\n    \"German (A1)\"\n  ],\n  \"location\": \"Ulm, Germany\",\n  \"search_keywords\": [\n    \"QA Engineer\",\n    \"Test Automation\",\n    \"Selenium\",\n    \"API Testing\"\n  ]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1504,
+        -144
+      ],
+      "id": "cd01fd86-44cf-426a-9976-734ee1cf6798",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        432
+      ],
+      "id": "0a63bf1d-bd6b-4646-8a4d-fe8384811422",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "X8lu80mVwOyPmaPB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.arbeitnow.com/api/job-board-api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        176,
+        176
+      ],
+      "id": "4ab4ac4b-3273-4217-a62d-60a150423bc1",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a professional technical job-description translator.\n\nTranslate German job descriptions into clear, accurate English.\n\nRules:\n- Translate the complete job description.\n- Do not summarize.\n- Do not add information.\n- Do not remove information.\n- Preserve technical terminology.\n- Preserve company names.\n- Preserve job titles.\n- Preserve numbers.\n- Preserve years of experience.\n- Preserve qualifications and requirements.\n- Preserve salary information if present.\n- Preserve locations.\n- If the description is already in English, return it unchanged.\n\nReturn ONLY the translated job description.",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "={{ \n  'Translate the following job description into English.\\n\\n' +\n  'Job title: ' + $json.title + '\\n\\n' +\n  'Job description:\\n' + $json.description\n}}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1472,
+        176
+      ],
+      "id": "c1e14f97-9de3-48a8-9071-598a90ecfcbd",
+      "name": "Translate Job Description"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following CV and create a structured candidate profile for an AI-powered job search system.\n\nUse the required structured output format.\n\nDo not add explanations or markdown.\n\nThe JSON MUST use exactly these field names:\n\n{\n  \"target_roles\": [],\n  \"technical_skills\": [],\n  \"qa_skills\": [],\n  \"programming_languages\": [],\n  \"testing_tools\": [],\n  \"api_testing_tools\": [],\n  \"devops_tools\": [],\n  \"databases\": [],\n  \"cloud_technologies\": [],\n  \"years_of_experience\": null,\n  \"seniority\": null,\n  \"industries\": [],\n  \"certifications\": [],\n  \"education\": [],\n  \"languages\": [],\n  \"location\": null,\n  \"search_keywords\": []\n}\n\nRules:\n\n- target_roles: Include the candidate's current/previous relevant roles and reasonable alternative job titles supported by the CV.\n- technical_skills: General technical skills.\n- qa_skills: Software QA and testing skills.\n- programming_languages: Programming/query languages explicitly supported by the CV.\n- testing_tools: QA/testing tools and frameworks.\n- api_testing_tools: Tools specifically used for API testing.\n- devops_tools: CI/CD, version control, containerization, orchestration and DevOps tools.\n- databases: Databases explicitly mentioned in the CV.\n- cloud_technologies: Cloud platforms explicitly mentioned in the CV.\n- years_of_experience: Extract the stated or clearly supported professional experience. Return a number when possible.\n- seniority: Infer only when reasonably supported by the CV. Otherwise return null.\n- industries: Domains/industries in which the candidate has relevant experience.\n- certifications: Certifications explicitly listed in the CV.\n- education: Degrees and institutions.\n- languages: Spoken languages and proficiency levels.\n- location: Current/relevant location from the CV.\n- search_keywords: Important terms that should be used to search for relevant jobs.\n\nDo not invent skills, experience, certifications, job titles, or technologies.\n\nThe candidate is primarily interested in QA, Quality Assurance, Software Testing, Test Automation and related roles.\n\nCV:\n\n{{ $json.data }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a professional CV/resume analyzer.  Your task is to accurately extract information from CVs.  Never invent information that isn't present in the CV."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1184,
+        -288
+      ],
+      "id": "19263bc1-ef9a-478a-bbcf-5b464ee9c0e1",
+      "name": "CV Keywords Extraction"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "205ae950-b284-4c90-ae17-38ef19dcd695",
+              "leftValue": "={{ $json.detected_language }}",
+              "rightValue": "German",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1184,
+        176
+      ],
+      "id": "733d5d33-3c1e-4d37-ae47-d46997c219d2",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const jobs = $input.first().json.data;\n\nreturn jobs.map(job => ({\n  json: job\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        176
+      ],
+      "id": "55034c09-e464-4147-957d-8795b081910a",
+      "name": "Job retrived"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "baae6336-7f1f-4971-bdce-0aba00b00684",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "\\b(QA|Quality Assurance|Data Analyst|Tester|Test Engineer|Test Automation|Software Tester|Software Test Engineer|SDET|Machine Learning|Werkstudent|Data Analyst|Working Student|Automation Engineer|AI Enablement Engineer|Graduate|Data Scientist)\\b",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "c166d300-3291-480e-b9aa-f55dd8167e7d",
+              "leftValue": "={{ $json.location }}",
+              "rightValue": "London",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        576,
+        176
+      ],
+      "id": "4ad9e65a-aee8-4280-bb97-e28b5ee8cf2c",
+      "name": "Role filter"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = Math.floor(Date.now() / 1000);\nconst maxAge = 48 * 60 * 60;\n\nreturn $input.all()\n  .filter(item => {\n    const createdAt = Number(item.json.created_at);\n\n    if (!createdAt || Number.isNaN(createdAt)) {\n      return false;\n    }\n\n    const age = now - createdAt;\n\n    return age >= 0 && age <= maxAge;\n  })\n  .map(item => {\n    const createdAt = Number(item.json.created_at);\n    const ageHours = (now - createdAt) / 3600;\n\n    return {\n      json: {\n        ...item.json,\n        age_hours: Math.round(ageHours * 10) / 10\n      }\n    };\n  });"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        160
+      ],
+      "id": "ff43a515-2430-4b55-bf93-7a659e4b9ee3",
+      "name": "48 hour filter"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const description = $json.description || '';\n\nconst text = description\n  .toLowerCase()\n  .replace(/<[^>]*>/g, ' ')\n  .replace(/&[a-z]+;/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nconst germanIndicators = [\n  ' der ',\n  ' die ',\n  ' das ',\n  ' den ',\n  ' dem ',\n  ' des ',\n  ' und ',\n  ' oder ',\n  ' für ',\n  ' mit ',\n  ' auf ',\n  ' eine ',\n  ' einen ',\n  ' einer ',\n  ' einem ',\n  ' suchen wir ',\n  ' aufgaben ',\n  ' anforderungen ',\n  ' qualifikationen ',\n  ' erfahrung ',\n  ' kenntnisse ',\n  ' bewerbung ',\n  ' voraussetzungen ',\n  ' wir bieten ',\n  ' du hast ',\n  ' du bist ',\n  ' du verfügst ',\n  ' deine ',\n  ' dein ',\n  ' deutsche ',\n  ' deutschkenntnisse ',\n  ' abgeschlossenes studium '\n];\n\nlet germanScore = 0;\n\nfor (const indicator of germanIndicators) {\n  if (text.includes(indicator)) {\n    germanScore++;\n  }\n}\n\nconst hasImageOnlyContent =\n  /<img[\\s>]/i.test(description) &&\n  text.replace(/find more.*$/i, '').trim().length < 150;\n\nconst insufficientText = text.length < 200;\n\nlet detected_language;\n\nif (hasImageOnlyContent || insufficientText) {\n  detected_language = 'Unknown';\n} else if (germanScore >= 3) {\n  detected_language = 'German';\n} else {\n  detected_language = 'English';\n}\n\nreturn {\n  json: {\n    ...$json,\n    detected_language,\n    german_score: germanScore,\n    description_length: text.length,\n    has_usable_text: !hasImageOnlyContent && !insufficientText\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        176
+      ],
+      "id": "dc1a8d6e-2852-4d1c-b03e-75b7dd602630",
+      "name": "German Detection"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const translatedText = $json.text || '';\n\nconst original = $('German Detection').item.json;\n\nconst descriptionEnglish =\n  translatedText ||\n  original.description ||\n  '';\n\nreturn {\n  json: {\n    job_title: original.title || '',\n    company_name: original.company_name || '',\n    location: original.location || '',\n\n    description_original: original.description || '',\n    description_english: descriptionEnglish,\n\n    application_link: original.url || '',\n\n    age_hours: original.age_hours ?? null,\n    created_at: original.created_at ?? null,\n\n    remote: original.remote ?? false,\n\n    tags: original.tags || [],\n    job_types: original.job_types || [],\n\n    detected_language: original.detected_language || 'Unknown'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        176
+      ],
+      "id": "550c98f0-f844-4425-8f78-954122523390",
+      "name": "Build clean Job"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "C:/n8n-files/Master CV/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1744,
+        624
+      ],
+      "id": "4df89f5e-035e-4a32-8ed4-1f47605cc377",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "QA_Job_Search_Reasults.xlsx"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1520,
+        624
+      ],
+      "id": "29acd314-e678-42de-bbf6-eb50dcca2a0e",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const job = item.json.job || item.json;\n\n  return {\n    json: {\n      \"Job Role\": job.job_title || '',\n      \"Company Name\": job.company_name || '',\n      \"Location\": job.location || '',\n      \"Job Description\": job.description_english || '',\n      \"Match Score\": item.json.match_score || 0,\n      \"Recommendation\": item.json.recommendation || '',\n      \"Matching Skills\": (item.json.matching_qualifications || []).join('; '),\n      \"Missing Requirements\": (item.json.missing_requirements || []).join('; '),\n      \"Language Concerns\": (item.json.language_concerns || []).join('; '),\n      \"Posted Hours Ago\": job.age_hours || '',\n      \"Application Link\": job.application_link || ''\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        624
+      ],
+      "id": "b4308e9e-6295-4f3e-b803-ae5f862d0341",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().sort((a, b) => {\n  return (b.json.match_score || 0) - (a.json.match_score || 0);\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        624
+      ],
+      "id": "ee93dbda-f945-4a75-85cd-f25bc0592100",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eecefe85-a31e-44ba-9a95-3e544c06924d",
+              "leftValue": "={{ $json.match_score }}",
+              "rightValue": 80,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        784,
+        624
+      ],
+      "id": "f580ccf2-f26c-410b-a6a6-8e9d1aa98126",
+      "name": "Match Score"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an expert technical recruiter and CV-to-job matching system.\n\nEvaluate how well the candidate matches the job.\n\nThe candidate is primarily targeting:\n- QA Engineer\n- Test Engineer\n- Test Automation Engineer\n- Software Testing\n- Quality Assurance\n- API Testing\n\nEvaluate actual requirements, not just keyword overlap.\n\nConsider:\n\n1. Job title and role alignment\n2. QA and software testing skills\n3. Test automation\n4. Programming languages\n5. Testing tools and frameworks\n6. API testing\n7. CI/CD and DevOps\n8. Databases and cloud technologies\n9. Required years of experience\n10. Seniority\n11. Education\n12. Certifications\n13. Industry/domain\n14. Language requirements\n15. Location and working arrangement\n\nLanguage rules:\n\nEnglish is required/preferred.\n\nGerman is a bonus.\n\nDo not reject a job because German is merely listed as a nice-to-have.\n\nIf German is explicitly required at B2/C1 or higher, the candidate's A1 German should result in a significant penalty.\n\nDistinguish between required, preferred and nice-to-have requirements.\n\nDo not invent candidate experience.\n\nDo not invent job requirements.\n\nProduce an evidence-based score.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "Evaluate this candidate against this job.  ======================== CANDIDATE PROFILE ========================  {{ JSON.stringify($json.cv_profile) }}  ======================== JOB ========================  {{ JSON.stringify($json.job) }}  ======================== SCORING ========================  Role alignment: 0–25 QA/testing skills: 0–25 Tools and technologies: 0–20 Experience/seniority: 0–10 Language compatibility: 0–10 Education/certifications: 0–5 Other relevant requirements: 0–5  The final match_score must equal the sum of all categories.  Also provide:  - matching qualifications - missing requirements - language concerns - concise explanation - recommendation"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        432,
+        624
+      ],
+      "id": "84dd8e3a-59a1-4414-bcce-a956efc9fa0c",
+      "name": "AI Job Matcher"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"match_score\": 0,\n  \"role_alignment_score\": 0,\n  \"qa_testing_score\": 0,\n  \"tools_technology_score\": 0,\n  \"experience_score\": 0,\n  \"language_score\": 0,\n  \"education_certification_score\": 0,\n  \"other_requirements_score\": 0,\n  \"recommendation\": \"Strong Match\",\n  \"matching_qualifications\": [],\n  \"missing_requirements\": [],\n  \"language_concerns\": [],\n  \"reason\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        848
+      ],
+      "id": "011a5725-8254-46bc-8a4f-e8de0e4b1f5b",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        432,
+        864
+      ],
+      "id": "3ea5c36b-d426-44d9-91dc-9754c97d315f",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "X8lu80mVwOyPmaPB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const cv = $('CV Keywords Extraction').first().json;\n\nreturn $input.all().map(item => ({\n  json: {\n    cv_profile: cv,\n    job: item.json\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        624
+      ],
+      "id": "1dbee8fd-b9ab-4098-a8f8-8f0f111b3935",
+      "name": "Attach CV Profile"
+    }
+  ],
+  "pinData": {
+    "Extract from File": [
+      {
+        "json": {
+          "data": "[]Vineeth Racharla\r\n\r\nDate of Birth: 06.04.1998\r\n\r\nNationality/Visa: Indian/Student Visa\r\n\r\nAddress: Ulm, 89075, Germany\r\n\r\nContact Number: +49 17674852417\r\n\r\nEmail: vineethracharla09@gmail.com\r\n\r\nGitHub: github.com/Vinrach\r\n\r\nLinkedIn: linkedin.com/in/vineeth-racharla/\r\n\r\n——————————————————————————————————————————————\r\n\r\nProfile Summary\r\n\r\nQA & Test Engineer with 3+ years of experience in manual testing, test\r\nautomation, API testing, and enterprise software quality assurance\r\nacross SaaS, SAP, mobile, and AI-driven applications. Experienced in\r\ntest planning, execution, defect tracking, regression, integration, and\r\nsystem testing within Agile environments. Skilled in Selenium, Cucumber,\r\nPostman, Jenkins, Jira, Git, CI/CD, and AI-assisted test automation.\r\nStrong background in software quality, traceability, documentation, and\r\ncontinuous process improvement, with hands-on experience applying AI to\r\nmodern testing workflows.\r\n\r\n——————————————————————————————————————————————\r\n\r\nProfessional Experience\r\n\r\n+-------------------+--------------------------------------------------+\r\n| Jan. 2025 –       |   Working Student                                |\r\n| Present           |                                                  |\r\n|                   |   SyncPilot GmbH.                                |\r\n| Augsburg, Germany |                                                  |\r\n|                   | - Improved AI image comparison accuracy from 62% |\r\n| Aug. 2025 – Feb.  |   to 85% by optimizing prompt engineering and    |\r\n| 2026              |   validation workflows.                          |\r\n|                   |                                                  |\r\n| Augsburg, Germany | - Increased testing reliability by validating    |\r\n|                   |   APIs with Postman and documenting reproducible |\r\n| Dec. 2021 - Oct.  |   defects and verification results.              |\r\n| 2023              |                                                  |\r\n|                   | - Reduced manual effort by 40% by developing     |\r\n| Bangalore, India  |   GitHub Copilot agents for Selenium and         |\r\n|                   |   Cucumber test generation.                      |\r\n| Jan. 2021 - Nov.  |                                                  |\r\n| 2021              | - Improved release quality by executing          |\r\n|                   |   functional, UI, cross-browser, and regression  |\r\n| Bangalore, India  |   testing across multiple mobile releases.       |\r\n|                   |                                                  |\r\n| Nov. 2019 - Mar.  | - Maintained test documentation, traceability,   |\r\n| 2020              |   and version-controlled artifacts to improve    |\r\n|                   |   collaboration and audit readiness.             |\r\n| Hyderabad, India  |                                                  |\r\n|                   |   Master Thesis                                  |\r\n|                   |                                                  |\r\n|                   |   SyncPilot GmbH.                                |\r\n|                   |                                                  |\r\n|                   | - Evaluated three MLLMs using enterprise         |\r\n|                   |   datasets to identify the most accurate UI      |\r\n|                   |   element detection approach.                    |\r\n|                   |                                                  |\r\n|                   | - Improved CSS selector prediction to 82% by     |\r\n|                   |   developing a RAG pipeline using FAISS and DOM  |\r\n|                   |   parsing.                                       |\r\n|                   |                                                  |\r\n|                   | - Fine-tuned Qwen models using PEFT LoRA on      |\r\n|                   |   1,150 sanitized samples, achieving 78% macro   |\r\n|                   |   F1 accuracy.                                   |\r\n|                   |                                                  |\r\n|                   | - Compared AI testing approaches and recommended |\r\n|                   |   privacy-compliant automation for enterprise QA |\r\n|                   |   workflows.                                     |\r\n|                   |                                                  |\r\n|                   |   Quality Assurance Engineer                     |\r\n|                   |                                                  |\r\n|                   |   Tata Consultancy Services.                     |\r\n|                   |                                                  |\r\n|                   | - Increased release quality by designing and     |\r\n|                   |   executing functional, integration, and         |\r\n|                   |   regression test cases in Agile teams.          |\r\n|                   |                                                  |\r\n|                   | - Reduced testing effort through Worksoft        |\r\n|                   |   Certify and Jenkins automation supporting      |\r\n|                   |   reliable CI/CD execution.                      |\r\n|                   |                                                  |\r\n|                   | - Improved defect traceability by maintaining    |\r\n|                   |   test cases, defect logs, and                   |\r\n|                   |   version-controlled testing artifacts.          |\r\n|                   |                                                  |\r\n|                   | - Achieved 99% SAP data accuracy by validating   |\r\n|                   |   enterprise integrations and documenting test   |\r\n|                   |   evidence.                                      |\r\n|                   |                                                  |\r\n|                   |   Operations Team Member                         |\r\n|                   |                                                  |\r\n|                   |   Tata Consultancy Services.                     |\r\n|                   |                                                  |\r\n|                   | - Improved supplier data accuracy by 25% through |\r\n|                   |   SAP workflow testing, defect resolution, and   |\r\n|                   |   ERP-CRM data validation.                       |\r\n|                   |                                                  |\r\n|                   |   Artificial Intelligence and Robotics Intern    |\r\n|                   |                                                  |\r\n|                   |   Elorce Industries Pvt. Ltd.                    |\r\n|                   |                                                  |\r\n|                   | - Developed an autonomous navigation prototype   |\r\n|                   |   using C++, Arduino, and sensors, improving     |\r\n|                   |   real-time obstacle detection accuracy.         |\r\n+-------------------+--------------------------------------------------+\r\n\r\nEducation\r\n\r\n+--------------------+-------------------------------------------------+\r\n| Oct. 2023 – Aug.   |   Master of Science in AI and Data Analytics    |\r\n| 2026               |                                                 |\r\n|                    |   Hochschule Neu-Ulm – (2.4/4.0 GPA)            |\r\n| Neu-Ulm, Germany   |                                                 |\r\n|                    |   Focus: AI and Big Data, Deep Learning,        |\r\n|                    |   Advanced NLP.                                 |\r\n+--------------------+-------------------------------------------------+\r\n| Jul. 2016 - Apr.   |   Bachelor’s degree in Electronics and          |\r\n| 2020               |   Communication Engineering                     |\r\n|                    |                                                 |\r\n| Guntur, India      |   Vignan University – (8.45/10.0 CGPA)          |\r\n|                    |                                                 |\r\n|                    |   Focus: Python Programming, Data Structures.   |\r\n+--------------------+-------------------------------------------------+\r\n\r\n——————————————————————————————————————————————\r\n\r\n+-------------------+--------------------------------------------------+\r\n| Projects          |   Unsupervised Machine Learning Algorithm -      |\r\n|                   |   CLARANS Link                                   |\r\n|                   |                                                  |\r\n|                   |   Description: Implemented CLARANS clustering    |\r\n|                   |   from scratch in Python, using NumPy, Pandas,   |\r\n|                   |   and Matplotlib for randomized medoid search,   |\r\n|                   |   cost optimization, hyperparameter tuning, and  |\r\n|                   |   university admission-pattern segmentation.     |\r\n|                   |                                                  |\r\n|                   |   AdaBoost Ensemble Learning for Breast Cancer   |\r\n|                   |   Classification Link                            |\r\n|                   |                                                  |\r\n|                   |   Description: Implemented AdaBoost from scratch |\r\n|                   |   with decision stumps for breast cancer         |\r\n|                   |   classification, using weighted ensemble        |\r\n|                   |   learning, hyperparameter tuning, and           |\r\n|                   |   feature-importance analysis.                   |\r\n|                   |                                                  |\r\n|                   |   Skip-gram Model – Distributed Word             |\r\n|                   |   Representation Link                            |\r\n|                   |                                                  |\r\n|                   |   Description: Implemented Skip-Gram word        |\r\n|                   |   embeddings in PyTorch using custom and Reuters |\r\n|                   |   corpora, applying negative sampling and        |\r\n|                   |   subsampling for semantic similarity, analogy   |\r\n|                   |   reasoning, compositionality, and embedding     |\r\n|                   |   visualization.                                 |\r\n|                   |                                                  |\r\n|                   |   Data Integration & Analytics Platform with     |\r\n|                   |   Apache Hive and Hue Link                       |\r\n|                   |                                                  |\r\n|                   |   Description: Built a Big Data analytics        |\r\n|                   |   pipeline using Hadoop, HDFS, HiveQL,           |\r\n|                   |   PostgreSQL, and Hue for data ingestion,        |\r\n|                   |   warehousing, and SQL-based insights.           |\r\n|                   |                                                  |\r\n|                   |   HawkAssist — AI-Powered Adaptive E-Learning    |\r\n|                   |   Platform Link                                  |\r\n|                   |                                                  |\r\n|                   |   Description: Developed an AI-powered           |\r\n|                   |   e-learning platform using OpenAI, LangChain,   |\r\n|                   |   Chroma, Streamlit, NLP, and SQLite for         |\r\n|                   |   document-based tutoring, automated             |\r\n|                   |   assessments, and learning analytics.           |\r\n|                   |                                                  |\r\n|                   |   AI Tutor Application — Enterprise Web Platform |\r\n|                   |   Link                                           |\r\n|                   |                                                  |\r\n|                   |   Description: Developed a Java enterprise web   |\r\n|                   |   platform for university tutoring with RESTful  |\r\n|                   |   APIs, course management, student enrollment,   |\r\n|                   |   professor workflows, PostgreSQL persistence,   |\r\n|                   |   and an AI-tutor interface.                     |\r\n|                   |                                                  |\r\n|                   |   HR Analytics Dashboard Link                    |\r\n|                   |                                                  |\r\n|                   |   Description: Created an HR analytics dashboard |\r\n|                   |   utilizing Excel, Power BI, and SQL, gaining    |\r\n|                   |   insights into key factors affecting employee   |\r\n|                   |   attrition and providing actionable             |\r\n|                   |   recommendations.                               |\r\n+===================+==================================================+\r\n\r\n——————————————————————————————————————————————\r\n\r\n+-------------------+:-------------------------------------------------+\r\n| Skills            |   Operating Systems: Linux, Windows              |\r\n|                   |                                                  |\r\n|                   |   Programming Languages: Python, Java (Basic),   |\r\n|                   |   SQL (Basic)                                    |\r\n|                   |                                                  |\r\n|                   |   Testing: Manual Testing, Test Automation,      |\r\n|                   |   Functional Testing, Regression Testing,        |\r\n|                   |                                                  |\r\n|                   |   Integration Testing, System Testing, API       |\r\n|                   |   Testing, UI Testing, Cross-browser             |\r\n|                   |                                                  |\r\n|                   |   Testing, Release Testing, Mobile Testing, Test |\r\n|                   |   Planning, Test Execution,                      |\r\n|                   |                                                  |\r\n|                   |   Test Documentation, Defect Tracking, Root      |\r\n|                   |   Cause Analysis, Traceability                   |\r\n|                   |                                                  |\r\n|                   |   Automation & QA Tools: Selenium, Cucumber,     |\r\n|                   |   Postman, Jira, Xray, Jenkins,                  |\r\n|                   |                                                  |\r\n|                   |   Worksoft Certify, SAP SolMan.                  |\r\n|                   |                                                  |\r\n|                   |   CI/CD & DevOps: CI/CD, Git, GitHub, Docker,    |\r\n|                   |   Kubernetes, Google Cloud Platform.             |\r\n|                   |                                                  |\r\n|                   |   AI & Machine Learning: Generative AI, Prompt   |\r\n|                   |   Engineering, GitHub Copilot,                   |\r\n|                   |                                                  |\r\n|                   |   RAG, PEFT LoRA, LangChain, TensorFlow,         |\r\n|                   |   PyTorch, Hugging Face,                         |\r\n|                   |                                                  |\r\n|                   |   Transformers, Pandas, NumPy.                   |\r\n|                   |                                                  |\r\n|                   |   Methodologies: Scrum, Agile, SDLC.             |\r\n+-------------------+--------------------------------------------------+\r\n\r\n——————————————————————————————————————————————\r\n\r\n+--------------------+----------------------------------------+\r\n| Certifications     |   Python Programming Link.             |\r\n|                    |                                        |\r\n|                    |   Generative AI Link.                  |\r\n|                    |                                        |\r\n|                    |   Google Cloud Certified Associate     |\r\n|                    |   Cloud Engineer Link.                 |\r\n|                    |                                        |\r\n|                    |   Understanding Prompt Engineering     |\r\n|                    |   Link.                                |\r\n|                    |                                        |\r\n|                    |   Data Analytics Essentials Link.      |\r\n+--------------------+----------------------------------------+\r\n\r\n——————————————————————————————————————————————\r\n\r\n+--------------------+-------------------------------------------------+\r\n| Awards             |   TCS 2022: On-the-spot Award for providing     |\r\n|                    |   valuable insights and creative                |\r\n|                    |                                                 |\r\n|                    |   solutions to enhance an ongoing project at    |\r\n|                    |   TCS.                                          |\r\n+--------------------+-------------------------------------------------+\r\n\r\n——————————————————————————————————————————————\r\n\r\n+--------------------+:---------------------------------------+\r\n| Languages          |   English (C1-Level), German           |\r\n|                    |   (A1-Level).                          |\r\n+--------------------+----------------------------------------+\r\n"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CV Keywords Extraction",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "CV Keywords Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "CV Keywords Extraction",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Translate Job Description",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Job retrived",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate Job Description": {
+      "main": [
+        [
+          {
+            "node": "Build clean Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CV Keywords Extraction": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job retrived": {
+      "main": [
+        [
+          {
+            "node": "Role filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Role filter": {
+      "main": [
+        [
+          {
+            "node": "48 hour filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "48 hour filter": {
+      "main": [
+        [
+          {
+            "node": "German Detection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "German Detection": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Translate Job Description",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build clean Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build clean Job": {
+      "main": [
+        [
+          {
+            "node": "Attach CV Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Match Score": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Job Matcher": {
+      "main": [
+        [
+          {
+            "node": "Match Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Job Matcher",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Job Matcher",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach CV Profile": {
+      "main": [
+        [
+          {
+            "node": "AI Job Matcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "44a4f9c7-574c-40d0-86fa-487efb05cdd5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "77c278153cbfaf2477bb8145c5280c24536ca45e66db8685daf803afe2f8745f"
+  },
+  "nodeGroups": [],
+  "id": "ufepsM0vteABOjr1",
+  "tags": []
+}
